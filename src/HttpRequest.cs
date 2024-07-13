@@ -9,56 +9,78 @@ namespace codecrafters_http_server.src
 
     public class HttpRequest
     {
-        public const int MaxBuffer = 4096;
-
         public string Method { get; set; }
         public string Path { get; set; }
-        public string Version { get; set; }
-        public string Headers { get; set; }
-        public string Body { get; set; }
+        public string HttpVersion { get; set; }
+        public Dictionary<string, string> Headers { get; private set; }
+        public Dictionary<string, string> QueryParameters { get; private set; }
+        public byte[] Body { get; set; }
 
         public HttpRequest()
         {
-            Method = string.Empty;
-            Path = string.Empty;
-            Version = string.Empty;
-            Headers = string.Empty;
-            Body = string.Empty;
+            Headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            QueryParameters = new Dictionary<string, string>();
         }
 
-
-        public static HttpRequest ParseHttpRequest(string rawRequest)
+        public void ParseRequest(string requestString)
         {
-            var request = new HttpRequest();
+            var lines = requestString.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+            var firstLine = lines[0].Split(' ');
 
-            string[] lines = rawRequest.Split(new[] { "\r\n" }, StringSplitOptions.None);
+            Method = firstLine[0];
+            var fullPath = firstLine[1];
+            HttpVersion = firstLine[2];
 
-            if (lines.Length > 0)
+            var pathParts = fullPath.Split('?');
+            Path = pathParts[0];
+
+            if (pathParts.Length > 1)
             {
-                string[] firstLineParts = lines[0].Split(' ');
-                if (firstLineParts.Length >= 3)
+                ParseQueryParameters(pathParts[1]);
+            }
+
+            for (int i = 1; i < lines.Length; i++)
+            {
+                if (string.IsNullOrWhiteSpace(lines[i]))
+                    break;
+
+                var headerParts = lines[i].Split(new[] { ':' }, 2);
+                if (headerParts.Length == 2)
                 {
-                    request.Method = firstLineParts[0];
-                    request.Path = firstLineParts[1];
-                    request.Version = firstLineParts[2];
+                    Headers[headerParts[0].Trim()] = headerParts[1].Trim();
                 }
             }
 
-            int headerEndIndex = Array.IndexOf(lines, string.Empty);
-            if (headerEndIndex > 0)
+            // Парсинг тела запроса, если оно есть
+            if (Headers.ContainsKey("Content-Length"))
             {
-                request.Headers = string.Join("\r\n", lines, 1, headerEndIndex - 1);
-                if (headerEndIndex < lines.Length - 1)
+                int contentLength = int.Parse(Headers["Content-Length"]);
+                Body = new byte[contentLength];
+                // Здесь нужно реализовать чтение тела запроса
+            }
+        }
+
+        private void ParseQueryParameters(string queryString)
+        {
+            var pairs = queryString.Split('&');
+            foreach (var pair in pairs)
+            {
+                var keyValue = pair.Split('=');
+                if (keyValue.Length == 2)
                 {
-                    request.Body = string.Join("\r\n", lines, headerEndIndex + 1, lines.Length - headerEndIndex - 1);
+                    QueryParameters[Uri.UnescapeDataString(keyValue[0])] = Uri.UnescapeDataString(keyValue[1]);
                 }
             }
-            else
-            {
-                request.Headers = string.Join("\r\n", lines, 1, lines.Length - 1);
-            }
+        }
 
-            return request;
+        public string GetBodyAsString()
+        {
+            return Body != null ? Encoding.UTF8.GetString(Body) : string.Empty;
+        }
+
+        public override string ToString()
+        {
+            return $"{Method} {Path} {HttpVersion}";
         }
     }
 }
