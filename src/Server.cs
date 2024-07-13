@@ -30,7 +30,7 @@ while (true)
 			}
 		else
 			{
-				response = new HTTPResponse(200, "Ok", string.Empty, string.Empty);
+				response = new HTTPResponse(200, "OK", string.Empty, string.Empty);
 				socket.Send(Encoding.UTF8.GetBytes(response.Serialize()));
 			}
 		}
