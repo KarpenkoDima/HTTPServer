@@ -35,6 +35,5 @@ while (true)
 			}
 		}
 	}
-    /*byte[] httpmsg = Encoding.UTF8.GetBytes("HTTP/1.1 200 OK\r\n\r\n");
-    socket.Send(httpmsg);*/
+
 }
