@@ -23,8 +23,12 @@ while (true)
 		request = HttpRequest.ParseHttpRequest(data);
 		if (request != null)
 		{
-			
-			if(Path.GetDirectoryName(request.Path) == "\\echo" || Path.GetDirectoryName(request.Path) == "/echo")
+			if (request.Path == "/" || request.Path == "")
+			{
+                response = new HTTPResponse(200, "OK", string.Empty, string.Empty);
+                socket.Send(Encoding.ASCII.GetBytes(response.Serialize()));
+            }
+			else if(Path.GetDirectoryName(request.Path) == "\\echo" || Path.GetDirectoryName(request.Path) == "/echo")
 			{ 
 				string headers = $"Content-Type: text/plain\r\nContent-Length: {Path.GetFileName(request.Path).Length}";
 				response = new HTTPResponse(200, "OK", headers, Path.GetFileName(request.Path));
