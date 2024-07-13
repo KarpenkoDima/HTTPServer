@@ -22,18 +22,9 @@ while (true)
 		request = HttpRequest.ParseHttpRequest(data);
 		if (request != null)
 		{
-			if (request.Path != "/index.html" && request.Path != "/")
-			{
-				Console.WriteLine(request.Path);
-				response = new HTTPResponse(404, "Not Found", string.Empty, string.Empty);
-				socket.Send(Encoding.UTF8.GetBytes(response.Serialize()));
-			}
-		else
-			{
-				response = new HTTPResponse(200, "OK", string.Empty, string.Empty);
-				socket.Send(Encoding.UTF8.GetBytes(response.Serialize()));
-			}
+			string headers = $"Content-Type: text/plain\r\nContent-Length: {Path.GetFileName(request.Path).Length}";
+			response = new HTTPResponse(200, "OK", headers, Path.GetFileName(request.Path));
+			socket.Send(Encoding.ASCII.GetBytes(response.Serialize()));
 		}
 	}
-
 }
