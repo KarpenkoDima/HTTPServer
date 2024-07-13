@@ -52,16 +52,20 @@ namespace codecrafters_http_server.src
         public string /*byte[]*/ GetFullResponse()
         {
             var responseBuilder = new StringBuilder();
-            responseBuilder.AppendLine($"HTTP/1.1 {(int)StatusCode} {StatusCode}");
-            responseBuilder.AppendLine($"Content-Type: {ContentType}");
-            responseBuilder.AppendLine($"Content-Length: {Body.Length}");
+            responseBuilder.Append($"HTTP/1.1 {(int)StatusCode} {StatusCode}");
+            responseBuilder.Append("\r\n");
+            responseBuilder.Append($"Content-Type: {ContentType}");
+            responseBuilder.Append("\r\n");
+            responseBuilder.Append($"Content-Length: {Body.Length}");
+            responseBuilder.Append("\r\n");
 
             foreach (var header in Headers)
             {
-                responseBuilder.AppendLine($"{header.Key}: {header.Value}");
+                responseBuilder.Append($"{header.Key}: {header.Value}");
+                responseBuilder.Append("\r\n");
             }
 
-            responseBuilder.AppendLine();
+            responseBuilder.Append("\r\n");
           
             var headerBytes = Encoding.ASCII.GetString(Body);
             /* var fullResponse = new byte[headerBytes.Length + Body.Length];
