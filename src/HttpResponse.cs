@@ -14,6 +14,17 @@ namespace codecrafters_http_server.src
         public Dictionary<string, string> Headers { get; private set; }
         public byte[] Body { get; set; }
 
+        private Dictionary<HttpStatusCode, string> mapper = new Dictionary<HttpStatusCode, string>
+    {
+        { HttpStatusCode.OK, "OK" },
+        { HttpStatusCode.Created, "Created" },
+        { HttpStatusCode.NoContent, "No Content" },
+        { HttpStatusCode.BadRequest, "Bad Request" },
+        { HttpStatusCode.Unauthorized, "Unauthorized" },
+        { HttpStatusCode.Forbidden, "Forbidden" },
+        { HttpStatusCode.NotFound, "Not Found" },
+        { HttpStatusCode.InternalServerError, "Internal Server Error" }
+        };
         public HttpResponse()
         {
             Headers = new Dictionary<string, string>();
@@ -52,7 +63,7 @@ namespace codecrafters_http_server.src
         public string /*byte[]*/ GetFullResponse()
         {
             var responseBuilder = new StringBuilder();
-            responseBuilder.Append($"HTTP/1.1 {(int)StatusCode} {StatusCode}");
+            responseBuilder.Append($"HTTP/1.1 {(int)StatusCode} {mapper[StatusCode]}");
             responseBuilder.Append("\r\n");
             responseBuilder.Append($"Content-Type: {ContentType}");
             responseBuilder.Append("\r\n");
