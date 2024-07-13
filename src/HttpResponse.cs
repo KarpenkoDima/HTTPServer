@@ -49,7 +49,7 @@ namespace codecrafters_http_server.src
         {
             return $"HTTP/1.1 {StatusCode} OK\r\n{Headers}\r\n\r\n";
         }
-        public byte[] GetFullResponse()
+        public string /*byte[]*/ GetFullResponse()
         {
             var responseBuilder = new StringBuilder();
             responseBuilder.AppendLine($"HTTP/1.1 {(int)StatusCode} {StatusCode}");
@@ -62,15 +62,14 @@ namespace codecrafters_http_server.src
             }
 
             responseBuilder.AppendLine();
-            /*string crlf = "\r\n";
-            byte[] crlfBytes = Encoding.ASCII.GetBytes(crlf);
-            Body = Body.Concat( crlfBytes ).ToArray();*/
-            var headerBytes = Encoding.ASCII.GetBytes(responseBuilder.ToString());
-            var fullResponse = new byte[headerBytes.Length + Body.Length];
-            Buffer.BlockCopy(headerBytes, 0, fullResponse, 0, headerBytes.Length);
-            Buffer.BlockCopy(Body, 0, fullResponse, headerBytes.Length, Body.Length);
-
-            return fullResponse;
+          
+            var headerBytes = Encoding.ASCII.GetString(Body);
+            /* var fullResponse = new byte[headerBytes.Length + Body.Length];
+             Buffer.BlockCopy(headerBytes, 0, fullResponse, 0, headerBytes.Length);
+             Buffer.BlockCopy(Body, 0, fullResponse, headerBytes.Length, Body.Length);
+            */
+            responseBuilder.Append(headerBytes);
+            return responseBuilder.ToString(); // fullResponse;
         }
     }
 }

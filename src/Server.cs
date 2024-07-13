@@ -59,6 +59,6 @@ while (true)
 		data = Encoding.ASCII.GetString(bytes, 0, bytesRec);
 		request.ParseRequest(data);
         response = router.Route(request);
-        socket.Send(response.GetFullResponse());
+        socket.Send(Encoding.ASCII.GetBytes(response.GetFullResponse()));
     }
 }
