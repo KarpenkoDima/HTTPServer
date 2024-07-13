@@ -2,6 +2,7 @@ using codecrafters_http_server.src;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.IO;
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 Console.WriteLine("Logs from your program will appear here!");
@@ -22,9 +23,18 @@ while (true)
 		request = HttpRequest.ParseHttpRequest(data);
 		if (request != null)
 		{
-			string headers = $"Content-Type: text/plain\r\nContent-Length: {Path.GetFileName(request.Path).Length}";
-			response = new HTTPResponse(200, "OK", headers, Path.GetFileName(request.Path));
-			socket.Send(Encoding.ASCII.GetBytes(response.Serialize()));
+			
+			if(Path.GetDirectoryName(request.Path) == "\\echo" || Path.GetDirectoryName(request.Path) == "/echo")
+			{ 
+				string headers = $"Content-Type: text/plain\r\nContent-Length: {Path.GetFileName(request.Path).Length}";
+				response = new HTTPResponse(200, "OK", headers, Path.GetFileName(request.Path));
+				socket.Send(Encoding.ASCII.GetBytes(response.Serialize()));
+			}
+			else 
+			{
+				response = new HTTPResponse(404, "Not Found", string.Empty, string.Empty);
+				socket.Send(Encoding.ASCII.GetBytes(response.Serialize()));
+			}
 		}
 	}
 }
