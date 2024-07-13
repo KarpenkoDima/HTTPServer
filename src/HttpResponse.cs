@@ -18,7 +18,7 @@ namespace codecrafters_http_server.src
         {
             Headers = new Dictionary<string, string>();
             StatusCode = HttpStatusCode.OK;
-            ContentType = string.Empty;
+            //ContentType = string.Empty;
             Body = new byte[0];
         }
 
@@ -62,9 +62,9 @@ namespace codecrafters_http_server.src
             }
 
             responseBuilder.AppendLine();
-            string crlf = "\r\n";
+            /*string crlf = "\r\n";
             byte[] crlfBytes = Encoding.ASCII.GetBytes(crlf);
-            Body = Body.Concat( crlfBytes ).ToArray();
+            Body = Body.Concat( crlfBytes ).ToArray();*/
             var headerBytes = Encoding.ASCII.GetBytes(responseBuilder.ToString());
             var fullResponse = new byte[headerBytes.Length + Body.Length];
             Buffer.BlockCopy(headerBytes, 0, fullResponse, 0, headerBytes.Length);
