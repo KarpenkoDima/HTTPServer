@@ -62,7 +62,9 @@ namespace codecrafters_http_server.src
             }
 
             responseBuilder.AppendLine();
-
+            string crlf = "\r\n";
+            byte[] crlfBytes = Encoding.ASCII.GetBytes(crlf);
+            Body = Body.Concat( crlfBytes ).ToArray();
             var headerBytes = Encoding.ASCII.GetBytes(responseBuilder.ToString());
             var fullResponse = new byte[headerBytes.Length + Body.Length];
             Buffer.BlockCopy(headerBytes, 0, fullResponse, 0, headerBytes.Length);
