@@ -52,7 +52,7 @@ router.AddRoute("GET", "/files/{filename}", (req, _) =>
 {
 	var response = new HttpResponse();
 	var file = Path.GetFileName(req.Path);
-	var currentDirectory = "/tmp";// argv[2]; // --directory dir
+	var currentDirectory = args[1]; // --directory dir
     var pathToFile = Path.Combine(currentDirectory, file);
    
     if (Path.Exists(pathToFile))
