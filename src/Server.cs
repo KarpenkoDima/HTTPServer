@@ -73,7 +73,8 @@ router.AddRoute("POST", "/files/{filename}", (req, _) =>
     string text = Encoding.ASCII.GetString(req.Body);
     var response = new HttpResponse();
     var file = Path.GetFileName(req.Path);
-	var currentDirectory = "/tmp/data/codecrafters.io/http-server-teste"; // --directory dir    
+	var currentDirectory = args[1];// "/tmp/data/codecrafters.io/http-server-teste"; // --directory dir
+    Console.WriteLine(currentDirectory);
     var pathToFile = Path.Combine(currentDirectory, file);
 
     File.WriteAllText(pathToFile, text);
