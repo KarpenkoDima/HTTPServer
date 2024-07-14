@@ -49,7 +49,11 @@ namespace codecrafters_http_server.src
             Body = Encoding.UTF8.GetBytes(html);
             ContentType = "text/html";
         }
-
+        public void SetOctetStreamContent(string octets)
+        {
+            Body = Encoding.UTF8.GetBytes(octets);
+            ContentType = "application/octet-stream";
+        }
         public void SetPlainTextContent(string text)
         {
             Body = Encoding.UTF8.GetBytes(text);

@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Data;
 using System.Threading.Tasks;
+using System.Reflection.PortableExecutable;
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 Console.WriteLine("Logs from your program will appear here!");
@@ -44,6 +45,25 @@ router.AddRoute("GET", "/user-agent", (req, _) =>
     }
     //response.Headers["Content-Length"] = response.Body.Length.ToString();
     return response;
+});
+
+router.AddRoute("GET", "/files/{filename}", (req, _) =>
+{
+	var response = new HttpResponse();
+	var file = Path.GetFileName(req.Path);
+	var pathToFile = Path.Combine("/tmp", file);
+	if (Path.Exists(pathToFile))
+	{
+		string text = File.ReadAllText(pathToFile);
+		response.SetOctetStreamContent(text);
+	}
+	else
+	{
+		response.StatusCode = System.Net.HttpStatusCode.NotFound;
+		response.SetPlainTextContent("404 Not Found");
+		
+	}
+	return response;
 });
 
 string data = string.Empty;
