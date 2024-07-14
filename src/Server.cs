@@ -51,7 +51,7 @@ router.AddRoute("GET", "/files/{filename}", (req, _) =>
 {
 	var response = new HttpResponse();
 	var file = Path.GetFileName(req.Path);
-	var pathToFile = Path.Combine("/tmp", file);
+	var pathToFile = Path.Combine("/tmp/data/codecrafters.io/http-server-tester", file);
 	if (Path.Exists(pathToFile))
 	{
 		string text = File.ReadAllText(pathToFile);
