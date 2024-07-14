@@ -72,9 +72,10 @@ router.AddRoute("POST", "/files/{filename}", (req, _) =>
     string text = Encoding.ASCII.GetString(req.Body);
     var response = new HttpResponse();
 	var file = Path.GetFileName(req.Path);
-	var currentDirectory = "/tmp";//args[2]; // --directory dir
-    
-    var pathToFile = Path.Combine(currentDirectory, file);		
+	var currentDirectory = args[2]; // --directory dir
+    Console.WriteLine(currentDirectory);
+    var pathToFile = Path.Combine(currentDirectory, file);
+	File.Create(pathToFile);
     File.WriteAllText(pathToFile, text);
 
     response.StatusCode= System.Net.HttpStatusCode.Created;
