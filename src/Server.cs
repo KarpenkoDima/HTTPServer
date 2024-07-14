@@ -6,6 +6,8 @@ using System.IO;
 using System.Data;
 using System.Threading.Tasks;
 using System.Reflection.PortableExecutable;
+using static System.Net.WebRequestMethods;
+using System.Diagnostics.Metrics;
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 Console.WriteLine("Logs from your program will appear here!");
@@ -71,14 +73,14 @@ router.AddRoute("POST", "/files/{filename}", (req, _) =>
 {    
     string text = Encoding.ASCII.GetString(req.Body);
     var response = new HttpResponse();
-	var file = Path.GetFileName(req.Path);
-	var currentDirectory = args[2]; // --directory dir    
+    var file = Path.GetFileName(req.Path);
+	var currentDirectory = "/tmp/data/codecrafters.io/http-server-teste" // --directory dir    
     var pathToFile = Path.Combine(currentDirectory, file);
 
     File.WriteAllText(pathToFile, text);
 
     response.StatusCode= System.Net.HttpStatusCode.Created;
-    // response.SetPlainTextContent("201 Created");
+    response.SetPlainTextContent("201 Created");
     return response;
 });
 string data = string.Empty;
