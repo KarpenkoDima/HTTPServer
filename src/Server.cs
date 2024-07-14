@@ -74,8 +74,7 @@ router.AddRoute("POST", "/files/{filename}", (req, _) =>
 	var file = Path.GetFileName(req.Path);
 	var currentDirectory = args[2]; // --directory dir
     Console.WriteLine(currentDirectory);
-    var pathToFile = Path.Combine(currentDirectory, file);
-	File.Create(pathToFile);
+    var pathToFile = Path.Combine(currentDirectory, file);	
     File.WriteAllText(pathToFile, text);
 
     response.StatusCode= System.Net.HttpStatusCode.Created;
