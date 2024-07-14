@@ -71,7 +71,7 @@ router.AddRoute("POST", "/files/{filename}", (req, _) =>
 {
 	var response = new HttpResponse();
 	var file = Path.GetFileName(req.Path);
-	var currentDirectory = argv[2]; // --directory dir
+	var currentDirectory = args[2]; // --directory dir
 	var pathToFile = Path.Combine(currentDirectory, file);
 
 	if (false == Path.Exists(pathToFile))
