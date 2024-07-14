@@ -51,21 +51,38 @@ router.AddRoute("GET", "/files/{filename}", (req, _) =>
 {
 	var response = new HttpResponse();
 	var file = Path.GetFileName(req.Path);
-	var pathToFile = Path.Combine("/tmp/data/codecrafters.io/http-server-tester", file);
-	if (Path.Exists(pathToFile))
+	var currentDirectory = "/tmp";// argv[2]; // --directory dir
+    var pathToFile = Path.Combine(currentDirectory, file);
+   
+    if (Path.Exists(pathToFile))
 	{
 		string text = File.ReadAllText(pathToFile);
 		response.SetOctetStreamContent(text);
 	}
 	else
-	{
+	{ 		
 		response.StatusCode = System.Net.HttpStatusCode.NotFound;
 		response.SetPlainTextContent("404 Not Found");
 		
 	}
 	return response;
 });
+router.AddRoute("POST", "/files/{filename}", (req, _) =>
+{
+	var response = new HttpResponse();
+	var file = Path.GetFileName(req.Path);
+	var currentDirectory = argv[2]; // --directory dir
+	var pathToFile = Path.Combine(currentDirectory, file);
 
+	if (false == Path.Exists(pathToFile))
+	{
+		File.Create(pathToFile);
+	}
+	File.WriteAllText(pathToFile, Encoding.ASCII.GetString(req.Body));
+	response.StatusCode= System.Net.HttpStatusCode.Created;
+    response.SetPlainTextContent("201 Created");
+    return response;
+});
 string data = string.Empty;
 byte[] bytes = new byte[1024];
 int bytesRec;
