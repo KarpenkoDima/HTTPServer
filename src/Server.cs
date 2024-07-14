@@ -79,7 +79,7 @@ router.AddRoute("POST", "/files/{filename}", (req, _) =>
     File.WriteAllText(pathToFile, text);
 
     response.StatusCode= System.Net.HttpStatusCode.Created;
-    response.SetPlainTextContent("201 Created");
+    response.SetOctetStreamContent(text);
     return response;
 });
 string data = string.Empty;
