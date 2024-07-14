@@ -55,10 +55,11 @@ namespace codecrafters_http_server.src
             if (Headers.ContainsKey("Content-Length"))
             {
                 int contentLength = int.Parse(Headers["Content-Length"]);
-                Body = new byte[contentLength];
+                Body = new byte[contentLength];               
                 // Здесь нужно реализовать чтение тела запроса
                 // нужно сверить размер тела запроса с Content-Length
                 Buffer.BlockCopy(Encoding.ASCII.GetBytes(lines.Last()), 0, Body, 0, contentLength);
+              
             }
         }
 

@@ -68,19 +68,17 @@ router.AddRoute("GET", "/files/{filename}", (req, _) =>
 	return response;
 });
 router.AddRoute("POST", "/files/{filename}", (req, _) =>
-{
-	var response = new HttpResponse();
+{    
+    string text = Encoding.ASCII.GetString(req.Body);
+    var response = new HttpResponse();
 	var file = Path.GetFileName(req.Path);
-	var currentDirectory = args[2]; // --directory dir
-	var pathToFile = Path.Combine(currentDirectory, file);
+	var currentDirectory = "/tmp";//args[2]; // --directory dir
+    
+    var pathToFile = Path.Combine(currentDirectory, file);		
+    File.WriteAllText(pathToFile, text);
 
-	if (false == Path.Exists(pathToFile))
-	{
-		File.Create(pathToFile);
-	}
-	File.WriteAllText(pathToFile, Encoding.ASCII.GetString(req.Body));
-	response.StatusCode= System.Net.HttpStatusCode.Created;
-    response.SetPlainTextContent("201 Created");
+    response.StatusCode= System.Net.HttpStatusCode.Created;
+    // response.SetPlainTextContent("201 Created");
     return response;
 });
 string data = string.Empty;
@@ -143,14 +141,11 @@ async Task ProcessClientAsync(Socket socket)
 	{
 		while ((bytesRec = await socket.ReceiveAsync(new ArraySegment<byte>(bytes), SocketFlags.None)) != 0)
 		{
-			data = Encoding.ASCII.GetString(bytes, 0, bytesRec);
-			request.ParseRequest(data);
+			data = Encoding.ASCII.GetString(bytes, 0, bytesRec);           
+            request.ParseRequest(data);
 			response = router.Route(request);
-			var msg = Encoding.ASCII.GetBytes(response.GetFullResponse());
-			//string message = "HTTP/1.1 200 OK\r\n\r\n";
-			//byte[] messageBytes = Encoding.ASCII.GetBytes(message);
-
-			await socket.SendAsync(new ArraySegment<byte>(msg), SocketFlags.None);
+			var msg = Encoding.ASCII.GetBytes(response.GetFullResponse());           
+            await socket.SendAsync(new ArraySegment<byte>(msg), SocketFlags.None);
 		}
 	}
 	finally
