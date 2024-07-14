@@ -72,9 +72,9 @@ router.AddRoute("POST", "/files/{filename}", (req, _) =>
     string text = Encoding.ASCII.GetString(req.Body);
     var response = new HttpResponse();
 	var file = Path.GetFileName(req.Path);
-	var currentDirectory = args[2]; // --directory dir
-    Console.WriteLine(currentDirectory);
-    var pathToFile = Path.Combine(currentDirectory, file);	
+	var currentDirectory = argv[2]; // --directory dir    
+    var pathToFile = Path.Combine(currentDirectory, file);
+
     File.WriteAllText(pathToFile, text);
 
     response.StatusCode= System.Net.HttpStatusCode.Created;
@@ -127,8 +127,7 @@ async Task HandleClientAsync(TcpClient client)
 /* Socket client */
 while (true)
 {
-		var socket = await server.AcceptSocketAsync(); // wait for client    
-		Console.WriteLine("Accept connect");
+		var socket = await server.AcceptSocketAsync(); // wait for client    		
 		_= ProcessClientAsync(socket);
 }
 
