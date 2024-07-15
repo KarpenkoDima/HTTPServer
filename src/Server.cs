@@ -147,7 +147,7 @@ async Task ProcessClientAsync(Socket socket)
 			response = router.Route(request);
 			if (request.Headers.TryGetValue("Accept-Encoding", out string value))
 			{
-				response.CreateCompressedResponse(value);				
+				response.CreateCompressedResponse(value);			
 			}
 			var msg = Encoding.ASCII.GetBytes(response.GetFullResponse());
             await socket.SendAsync(new ArraySegment<byte>(msg), SocketFlags.None);
