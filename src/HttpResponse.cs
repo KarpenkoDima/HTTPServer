@@ -65,7 +65,7 @@ namespace codecrafters_http_server.src
         {
             return $"HTTP/1.1 {StatusCode} OK\r\n{Headers}\r\n\r\n";
         }
-        public string /*byte[]*/ GetFullResponse()
+        public byte[] GetFullResponse()
         {
             var responseBuilder = new StringBuilder();
             responseBuilder.Append($"HTTP/1.1 {(int)StatusCode} {mapper[StatusCode]}");
@@ -83,18 +83,19 @@ namespace codecrafters_http_server.src
 
             responseBuilder.Append("\r\n");
 
-            var headerBytes = Encoding.ASCII.GetString(Body);
-            /* var fullResponse = new byte[headerBytes.Length + Body.Length];
+            var headerBytes = Encoding.ASCII.GetBytes(responseBuilder.ToString());//Encoding.ASCII.GetString(Body);         
+
+             var fullResponse = new byte[headerBytes.Length + Body.Length];
              Buffer.BlockCopy(headerBytes, 0, fullResponse, 0, headerBytes.Length);
              Buffer.BlockCopy(Body, 0, fullResponse, headerBytes.Length, Body.Length);
-            */
-            responseBuilder.Append(headerBytes);
-            return responseBuilder.ToString(); // fullResponse;
+
+            //responseBuilder.Append(headerBytes);
+            return fullResponse;//responseBuilder.ToString(); //
         }
         private void Gzip()
         {
-            Console.WriteLine(Encoding.ASCII.GetString(Body));
-            Console.WriteLine(Body.Length.ToString());
+           /* Console.WriteLine(Encoding.ASCII.GetString(Body));
+            Console.WriteLine(Body.Length.ToString());*/
             byte[] buffer = new byte[Body.Length];
             Buffer.BlockCopy(Body, 0, buffer, 0, Body.Length);
             MemoryStream ms = new MemoryStream();
@@ -107,10 +108,10 @@ namespace codecrafters_http_server.src
             Body = new byte[ms.Length];
             ms.Read(Body, 0, Body.Length);
 
-            Console.WriteLine(Encoding.ASCII.GetString(Body));
-            Console.WriteLine(Body.Length.ToString());
+            /*Console.WriteLine(Encoding.ASCII.GetString(Body));
+            Console.WriteLine(Body.Length.ToString());*/
             string hexOutput = BitConverter.ToString(Body).Replace("-", " ");
-            Console.WriteLine(hexOutput);
+            Console.WriteLine("GZip" + hexOutput);
 
             //AddHeader("Content-Encoding", Encoding.UTF8.ToString());
            // AddHeader("Content-Length64", Body.Length.ToString());

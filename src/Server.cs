@@ -149,7 +149,7 @@ async Task ProcessClientAsync(Socket socket)
 			{
 				response.CreateCompressedResponse(value);			
 			}
-			var msg = Encoding.ASCII.GetBytes(response.GetFullResponse());
+			var msg = response.GetFullResponse();            
             await socket.SendAsync(new ArraySegment<byte>(msg), SocketFlags.None);
 		}
 	}
