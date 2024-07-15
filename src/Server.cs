@@ -145,7 +145,14 @@ async Task ProcessClientAsync(Socket socket)
 			data = Encoding.ASCII.GetString(bytes, 0, bytesRec);           
             request.ParseRequest(data);
 			response = router.Route(request);
-			var msg = Encoding.ASCII.GetBytes(response.GetFullResponse());           
+			if (request.Headers.TryGetValue("Accept-Encoding", out string value))
+			{
+				if (value.ToUpper() == "GZIP")
+				{
+					response.CreateCompressedResponse();
+				}
+			}
+			var msg = Encoding.ASCII.GetBytes(response.GetFullResponse());
             await socket.SendAsync(new ArraySegment<byte>(msg), SocketFlags.None);
 		}
 	}

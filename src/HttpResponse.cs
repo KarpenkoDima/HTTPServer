@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -81,7 +82,7 @@ namespace codecrafters_http_server.src
             }
 
             responseBuilder.Append("\r\n");
-          
+
             var headerBytes = Encoding.ASCII.GetString(Body);
             /* var fullResponse = new byte[headerBytes.Length + Body.Length];
              Buffer.BlockCopy(headerBytes, 0, fullResponse, 0, headerBytes.Length);
@@ -89,6 +90,22 @@ namespace codecrafters_http_server.src
             */
             responseBuilder.Append(headerBytes);
             return responseBuilder.ToString(); // fullResponse;
+        }
+        public void CreateCompressedResponse()
+        {
+            byte[] buffer = Body;
+            MemoryStream ms = new MemoryStream();
+
+            using (GZipStream gzip = new GZipStream(ms, CompressionMode.Compress, true))
+            {
+                gzip.Write(buffer, 0, buffer.Length);
+            }
+            ms.Position = 0;
+            Body = new byte[ms.Length];
+            ms.Read(Body, 0, Body.Length);
+            AddHeader("Content-Encoding", Encoding.UTF8.ToString());
+            AddHeader("Content-Length64", Body.Length.ToString());
+            AddHeader("Content-Encoding", "gzip");
         }
     }
 }
