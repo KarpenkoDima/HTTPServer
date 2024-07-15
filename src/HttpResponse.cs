@@ -91,7 +91,7 @@ namespace codecrafters_http_server.src
             responseBuilder.Append(headerBytes);
             return responseBuilder.ToString(); // fullResponse;
         }
-        public void CreateCompressedResponse()
+        private void Gzip()
         {
             byte[] buffer = Body;
             MemoryStream ms = new MemoryStream();
@@ -106,6 +106,31 @@ namespace codecrafters_http_server.src
             AddHeader("Content-Encoding", Encoding.UTF8.ToString());
             AddHeader("Content-Length64", Body.Length.ToString());
             AddHeader("Content-Encoding", "gzip");
+        }
+        public void CreateCompressedResponse(string compresseSchemas)
+        {
+            if (string.IsNullOrEmpty(compresseSchemas))
+            {
+                return;
+            }
+            var encodings = compresseSchemas.Split(',');
+            
+            for (int i = encodings.Length - 1; i >= 0; i--)
+            {
+                string encoding = encodings[i].Trim().ToLower();
+                switch (encoding)
+                {
+                    case "gzip":
+                        Gzip();
+                        break;
+                        /*case "deflate":
+                            decompressedStream = new DeflateStream(decompressedStream, CompressionMode.Decompress);
+                            break;
+                        case "br":
+                            decompressedStream = new BrotliStream(decompressedStream, CompressionMode.Decompress);
+                            break;*/
+                }
+            }
         }
     }
 }
