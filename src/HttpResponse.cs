@@ -93,18 +93,27 @@ namespace codecrafters_http_server.src
         }
         private void Gzip()
         {
-            byte[] buffer = Body;
+            Console.WriteLine(Encoding.ASCII.GetString(Body));
+            Console.WriteLine(Body.Length.ToString());
+            byte[] buffer = new byte[Body.Length];
+            Buffer.BlockCopy(Body, 0, buffer, 0, Body.Length);
             MemoryStream ms = new MemoryStream();
 
-            using (GZipStream gzip = new GZipStream(ms, CompressionMode.Compress, true))
+            using (GZipStream gzip = new GZipStream(ms, CompressionLevel.Optimal, true))
             {
                 gzip.Write(buffer, 0, buffer.Length);
             }
             ms.Position = 0;
             Body = new byte[ms.Length];
             ms.Read(Body, 0, Body.Length);
-            AddHeader("Content-Encoding", Encoding.UTF8.ToString());
-            AddHeader("Content-Length64", Body.Length.ToString());
+
+            Console.WriteLine(Encoding.ASCII.GetString(Body));
+            Console.WriteLine(Body.Length.ToString());
+            string hexOutput = BitConverter.ToString(Body).Replace("-", " ");
+            Console.WriteLine(hexOutput);
+
+            //AddHeader("Content-Encoding", Encoding.UTF8.ToString());
+           // AddHeader("Content-Length64", Body.Length.ToString());
             AddHeader("Content-Encoding", "gzip");
         }
         public void CreateCompressedResponse(string compresseSchemas)
